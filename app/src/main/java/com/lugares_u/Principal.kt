@@ -11,17 +11,17 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.lugares_u.databinding.ActivityPrincipalBinding
+import com.lugares_u.databinding.PrincipalBinding
 
 class Principal : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityPrincipalBinding
+    private lateinit var binding: PrincipalBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityPrincipalBinding.inflate(layoutInflater)
+        binding = PrincipalBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.appBarPrincipal.toolbar)

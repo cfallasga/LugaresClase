@@ -3,10 +3,14 @@ package com.lugares_u
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.MenuItem
 import android.widget.Toast
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.lugares_u.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -23,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root) //fije la vista de contenido con lo que esta en activity_main.xml
 
         //Inicializo el objeto de autenticacion, realmente Firebase
-        FirebaseApp.initializeApp(context: this)
+        FirebaseApp.initializeApp(this)
 
         auth = Firebase.auth
         //control para los botonoes
@@ -38,10 +42,12 @@ class MainActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(correo,clave)
             .addOnCompleteListener(this) { task ->
                 if(task.isSuccessful){ //si se hizo el registro
+                    Log.d("creando usuario","Registrado")
                     val user = auth.currentUser
                     refresca(user)
                 } else { // si no se hizo el registro
-                    Toast.makeText(baseContext, getString(R.string.msg_fallo), Toast.LENGTH_LONG)
+                    Log.d("creando usuario","Falló")
+                    Toast.makeText(baseContext, "Falló", Toast.LENGTH_LONG).show()
                     refresca(null)
                 }
 
@@ -56,9 +62,41 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun haceLogin() {
-        TODO("Not yet implemented")
+    //Esto hara que una vez autenticado... No pida mas a menos que cierre sesion
+    public override fun onStart(){
+        super.onStart() // preguntar al profesor por esta recursividad
+        val usuario = auth.currentUser
+        refresca(usuario)
     }
 
+    private fun haceLogin() {
+        val correo = binding.etCorreo.text.toString()
+        val clave = binding.etClave.text.toString()
+        //se hace el login
+        // NOTA LA MONADA CAMBIO AL INGRESO DE DE CORREO Y CONTRASENNA
+        auth.signInWithEmailAndPassword(correo,clave)
+            .addOnCompleteListener(this) { task ->
+                if(task.isSuccessful){ //si se hizo el registro
+                    Log.d("Autenticando","Autenticado")
+                    val user = auth.currentUser
+                    refresca(user)
+                } else { // si no se hizo el registro
+                    Log.d("Autenticando","Falló")
+                    Toast.makeText(baseContext, "Falló", Toast.LENGTH_LONG).show()
+                    refresca(null)
+                }
+
+            }
+    }
+    // metodo para agregar en principal
+   /* override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.log ->{
+                Firebase.auth.signOut()
+                finish()
+                true
+            }else -> super.onOptionsItemSelected(item)
+        }
+    }*/
 
 }
